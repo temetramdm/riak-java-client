@@ -13,16 +13,14 @@
  */
 package com.basho.riak.client.raw.http;
 
-import java.io.IOException;
-
-
 import com.basho.riak.client.http.util.Constants;
 import com.basho.riak.client.query.functions.NamedJSFunction;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+
+import java.io.IOException;
 
 /**
  * @author russell
@@ -36,17 +34,13 @@ public class NamedJSFunctionDeserializer extends JsonDeserializer<NamedJSFunctio
      * org.codehaus.jackson.map.JsonDeserializer#deserialize(org.codehaus.jackson
      * .JsonParser, org.codehaus.jackson.map.DeserializationContext)
      */
-    @Override public NamedJSFunction deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
-            JsonProcessingException {
-
+    @Override public NamedJSFunction deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException
+    {
         JsonToken token = jp.getCurrentToken();
-
         if (JsonToken.START_OBJECT.equals(token)) {
-
             String name = null;
-
             while (!JsonToken.END_OBJECT.equals(token)) {
-                String field = jp.getCurrentName();
+                String field = jp.currentName();
 
                 if (Constants.FL_SCHEMA_FUN_NAME.equals(field)) {
                     jp.nextToken();
@@ -60,7 +54,7 @@ public class NamedJSFunctionDeserializer extends JsonDeserializer<NamedJSFunctio
                 return null;
             }
         }
-        throw ctxt.mappingException(NamedJSFunction.class);
+        return ctxt.reportInputMismatch(NamedJSFunction.class, "Expected object but got %s", token);
     }
 
 }

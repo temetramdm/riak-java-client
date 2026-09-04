@@ -13,16 +13,14 @@
  */
 package com.basho.riak.client.raw.http;
 
-import java.io.IOException;
-
-
 import com.basho.riak.client.cap.Quora;
 import com.basho.riak.client.cap.Quorum;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+
+import java.io.IOException;
 
 /**
  * @author russell
@@ -33,8 +31,7 @@ public class QuorumDeserializer extends JsonDeserializer<Quorum>{
     /* (non-Javadoc)
      * @see org.codehaus.jackson.map.JsonDeserializer#deserialize(org.codehaus.jackson.JsonParser, org.codehaus.jackson.map.DeserializationContext)
      */
-    @Override public Quorum deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
-            JsonProcessingException {
+    @Override public Quorum deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonToken token = jp.getCurrentToken();
         switch (token) {
         case VALUE_STRING: {
@@ -49,7 +46,7 @@ public class QuorumDeserializer extends JsonDeserializer<Quorum>{
         default:
             break;
         }
-        throw ctxt.mappingException(Quorum.class);
+        return ctxt.reportInputMismatch(Quorum.class, "Expected string or number but got %s", token);
     }
 
 }
